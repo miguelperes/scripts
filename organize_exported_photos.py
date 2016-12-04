@@ -20,34 +20,46 @@ class FileWrapper:
 
 
 
-PATH = None
+ROOT = None
+obj = {}
 
 def main():
 	if(len(sys.argv) > 1):
 		print(sys.argv[1])
-		PATH = sys.argv[1]
+		ROOT = sys.argv[1]
 	else:
 		# print(os.getcwd())
-		PATH = os.getcwd()
+		ROOT = os.getcwd()
 	
-	PATH = os.getcwd() + '/Fotos/'
-	filesList = os.scandir(PATH)
+	ROOT = os.getcwd() + '/Fotos/'
+	filesList = os.scandir(ROOT)
 
 	for file in filesList:
-		# print( file.name )
+		
 		if( os.path.isdir(file.path) ):
-			splittedName = file.name.split(',')
-			year = splittedName[-1].strip()
+			parsedPath = file.name.split(',')
+			year = parsedPath[-1].strip()
+			yearFolder = ROOT + year + '/'
 			# print( year )
-			# print( PATH + year )
+			print( yearFolder )
+			if not year in obj:
+				obj[year] = []
 
+			if( not os.path.isdir(ROOT + year) ):
+				parsedPath.pop()
+				# os.mkdir(ROOT + year)
 
-			if( not os.path.isdir(PATH + year) ):
-				splittedName.pop()
-				# os.mkdir(PATH + year)
-				print( splittedName )
+			day = parsedPath[-1].strip()
+			dayFolder = yearFolder + day + '/'
+			print( dayFolder )
+			
+			# compose obj and then add it? 
+			if not day in obj[year]:
+				obj[year] = { 'day': day, filesList: [] }
 
-
+			photosList = os.listdir(file.path);
+			for photo in photosList:
+				# obj[year][fi]
 
 
 		# file = FileWrapper(file)
@@ -55,6 +67,8 @@ def main():
 		# file.move( newPath )
 
 	# print(os.listdir(PATH));
+
+	print( obj )
 
 
 # Get file name only, without extension
